@@ -3,7 +3,7 @@ Python-Project-Scrape-Twitter-Data
 Steps To Follow
 Run the required dependencies given in the requirementALL.txt
 
-Clone your mmaster repository to your local machine. The github repository URL is .
+Clone your master repository to your local machine. The github repository URL is .
 
 Start the tweetScrap.py file, using the command "streamlit run tweetScrap.py".
 
