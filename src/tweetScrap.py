@@ -8,21 +8,23 @@ from pymongo import MongoClient
 
 @st.cache_resource
 def init_connection():
-     try:
+    try:
         client = MongoClient("mongodb://mongouser:mongouser@ac-5z6nxsr-shard-00-00.fdm7jzb.mongodb.net:27017,ac-5z6nxsr-shard-00-01.fdm7jzb.mongodb.net:27017,ac-5z6nxsr-shard-00-02.fdm7jzb.mongodb.net:27017/?ssl=true&replicaSet=atlas-9uigl4-shard-0&authSource=admin&retryWrites=true&w=majority")
         print("Connected successfully!!!")
         return client
-     except Exception as ex:
+    except Exception as ex:
         print("Could not connect to MongoDB")
         print(ex)
         st.error('Unable to upload.')
 
 #Search parameter function
-def search(searchText, since, until): 
+def search(searchText, 
+           since, 
+           until): 
     global filename 
     global filename_json
     q = ''
-    
+        
     if searchText!='' and since!='' and until!='': 
         q += f"{searchText} since:{datetime.datetime.strftime(since, '%Y-%m-%d')} until:{datetime.datetime.strftime(until, '%Y-%m-%d')}"
         filename = f"{since}_{until}_{searchText}.csv"
@@ -31,8 +33,8 @@ def search(searchText, since, until):
         if searchText!='':
             q += searchText
         if until=='': 
-             until = datetime.datetime.strftime(date.today(), '%Y-%m-%d') 
-             q += f" until:{until}" 
+            until = datetime.datetime.strftime(date.today(), '%Y-%m-%d') 
+            q += f" until:{until}" 
         if since=='':
             since = datetime.datetime.strftime(datetime.datetime.strptime(until, '%Y-%m-%d') - datetime.timedelta(days=7), '%Y-%m-%d') 
             q += f" since:{since}" 
@@ -45,18 +47,25 @@ def search(searchText, since, until):
 def convert_df_tocsv(df): 
     if df is not None:  
         with st.spinner('Downloading...'):
-           click = st.download_button(label="Download as CSV", data=df.to_csv(index=False).encode('utf-8'), file_name=filename, 
-                       mime="text/csv", key='download-csv')
-           if click:
-               st.success('Downloaded Successfully')
+            click = st.download_button(label="Download as CSV", 
+                                       data=df.to_csv(index=False).encode('utf-8'), 
+                                       file_name=filename, 
+                                        mime="text/csv", 
+                                        key='download-csv')
+            if click:
+                st.success('Downloaded Successfully')
 
 def convert_df_tojson(df):
-     if df is not None:  
+    if df is not None:  
         with st.spinner('Downloading...'):
-            click = st.download_button(label="Download as JSON", file_name=filename_json, mime="application/json", data=json.dumps(df), key='download-json')
+            click = st.download_button(label="Download as JSON", 
+                                       file_name=filename_json, 
+                                       mime="application/json", 
+                                       data=json.dumps(df), 
+                                       key='download-json')
 
             if click:
-               st.success('Downloaded Successfully')
+                st.success('Downloaded Successfully')
 
 def upload_data(df):
     try:
@@ -123,14 +132,18 @@ def scrap_data():
             st.write('Invalid input values.')
 
         return df_result
+        
 
 result = scrap_data()
 
 if result is not None:
-    st.button(label="Upload to DB", key="btn_upload", type="secondary", on_click=upload_data, args=(result,))
+    st.button(label="Upload to DB", 
+              key="btn_upload", 
+              type="secondary", 
+              on_click=upload_data, 
+              args=(result,))
     #Download Data as CSV
     convert_df_tocsv(result)
-
     #Download Data as JSON tweets_list
     convert_df_tojson(result.values.tolist()) 
     
