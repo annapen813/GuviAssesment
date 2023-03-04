@@ -1,0 +1,6 @@
+pandas==1.5.3
+snscrape==0.5.0
+json==3.11
+streamlit==1.19.0
+pymongo==4.3.3
+datetime==3.11
